@@ -58,9 +58,18 @@ def initialize_bot(token, index):
     try:
         bot = Client(f"bot_{index}", bot_token=token, api_id=API_ID, api_hash=API_HASH)
         bot.add_handler(MessageHandler(send_reply))
+        bot.start()  # Start the bot here to catch any errors
         return bot
+    except FloodWait as e:
+        logger.warning(f"Flood wait for {e.x} seconds. Retrying...")
+        bot.stop()
+        return None
     except Exception as e:
-        logger.error(f"Failed to initialize bot {index}: {e}")
+        logger.error(f"Failed to initialize bot {index} with token {token}: {e}")
+        # Specifically catch token expiration or other common errors
+        if 'token' in str(e).lower():
+            logger.error(f"Bot token {token} has expired or is invalid.")
+        bot.stop()
         return None
 
 def main():
