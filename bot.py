@@ -23,11 +23,9 @@ except Exception as e:
     exit(1)
 
 async def send_reply(c, m):
+    user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
+    mention = f"[{user}](tg://user?id={m.from_user.id})"
     try:
-        logger.info(f"Incoming message: {m}")
-        user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
-        mention = f"[{user}](tg://user?id={m.from_user.id})"
-
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
         await m.reply_text(
@@ -53,8 +51,8 @@ async def send_reply(c, m):
         await asyncio.sleep(e.value)
         await send_reply(c, m)
     except Exception as e:
-        logger.error(f"Failed to send 301 message: {e}")
-
+        logger.error("Got error while send msg")
+        
 def initialize_bot(token, index):
     try:
         bot = Client(f"bot_{index}", bot_token=token, api_id=API_ID, api_hash=API_HASH)
