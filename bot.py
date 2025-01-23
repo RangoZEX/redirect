@@ -23,12 +23,11 @@ except Exception as e:
     logger.error(f"Environment variable error: {e}")
     exit(1)
 
-
 async def send_reply(c, m):
     try:
-        last_name = f' {getattr(m.from_user, "last_name", "")}'  # Use getattr to safely access last_name
+        last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
         mention = f"[{m.from_user.first_name}{last_name}](tg://user?id={m.from_user.id})"
-        user_full_name = f"{m.from_user.first_name} {getattr(m.from_user, 'last_name', '')}" if m.from_user.first_name else m.from_user.first_name or str(m.from_user.id)
+        user_full_name = f"{m.from_user.first_name}" if m.from_user.first_name else str(m.from_user.id)
         
         logger.info(f"Sending message to 👨 - {user_full_name}")
         
@@ -56,7 +55,7 @@ async def send_reply(c, m):
         await send_reply(c, m)
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
-        
+     
 
 def initialize_bot(token, index):
     try:
