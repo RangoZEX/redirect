@@ -1,2 +1,4 @@
-pyrogram==2.0.57
-tgcrypto
+TgCrypto-pyrofork
+async-timeout
+pyrofork
+pytz
