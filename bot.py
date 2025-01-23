@@ -24,32 +24,35 @@ except Exception as e:
 
 async def send_reply(c, m):
     try:
-        first_name = m.from_user.first_name if m.from_user.first_name else str(m.from_user.id)
-        mention = f"[{first_name}](tg://user?id={m.from_user.id})"
-        logger.info(f"Sending message to 👨 - {first_name}")
+        user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
+        mention = f"[{user}](tg://user?id={m.from_user.id})"
 
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
-
         await m.reply_text(
             f"**👋 Hey {mention}**,\n\n"
             "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
-            "<blockquote>**__🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.__**</blockquote>\n\n"
+            "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.</blockquote>**\n\n"
             "✨ **Why move?**\n"
-            "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)\n\n"
+            "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)**\n\n"
             "Thank you for your support! 💙",
             reply_markup=inline_keyboard,
             quote=True,
             disable_web_page_preview=True
         )
-        await asyncio.sleep(1)
-
+        logger.info(f"Moved prompt message sent to: 🙎 {user}")
+        await c.send_reaction(
+            chat_id=m.chat.id,
+            message_id=m.id,
+            emoji="🥴",
+            big=True
+        )
     except FloodWait as e:
         logger.warning(f"Flood wait for {e.value} seconds. Retrying...")
         await asyncio.sleep(e.value)
         await send_reply(c, m)
     except Exception as e:
-        logger.error(f"Failed to send shift message: {e}")
+        logger.error(f"Failed to send 301 message: {e}")
 
 def initialize_bot(token, index):
     try:
