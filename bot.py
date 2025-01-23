@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 try:
-    API_ID = int(os.environ.get("API_ID", 0))
-    API_HASH = os.environ.get("API_HASH", "")
+    API_ID = int(os.environ.get("API_ID", 15316304))
+    API_HASH = os.environ.get("API_HASH", "bd4e50df87a06ac57d4926fab706c583")
     BOT_TOKENS = [token for token in os.environ.get("BOT_TOKEN", "").split()]
     if not API_ID or not API_HASH or not BOT_TOKENS:
         raise ValueError("API_ID, API_HASH, or BOT_TOKEN is missing or invalid.")
