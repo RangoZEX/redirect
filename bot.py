@@ -24,6 +24,7 @@ except Exception as e:
 
 async def send_reply(c, m):
     try:
+        logger.info(f"Incoming message: {m}")
         user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
         mention = f"[{user}](tg://user?id={m.from_user.id})"
 
