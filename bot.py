@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from text import MOVED_MSG
 from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
@@ -55,7 +56,7 @@ async def send_reply(c, m):
         except Exception as e:
             logger.error(f"Got error while sending msg: {e}")
     else:
-        logger.warning("Message from a non-user source: 🙂")
+        await m.reply_text(text=MOVED_MSG, quote=True)
         
 def initialize_bot(token, index):
     try:
