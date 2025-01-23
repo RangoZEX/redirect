@@ -1,4 +1,4 @@
 TgCrypto-pyrofork
 async-timeout
-pyrofork
+kurirogram
 pytz
