@@ -1,10 +1,9 @@
 import os
 import asyncio
-import time
 import logging
 from pyrogram import Client
 from pyrogram.handlers import MessageHandler
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, BadRequest
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 logging.basicConfig(
@@ -27,9 +26,7 @@ async def send_reply(c, m):
     try:
         first_name = m.from_user.first_name if m.from_user.first_name else str(m.from_user.id)
         mention = f"[{first_name}](tg://user?id={m.from_user.id})"
-        user_full_name = first_name
-
-        logger.info(f"Sending message to 👨 - {user_full_name}")
+        logger.info(f"Sending message to 👨 - {first_name}")
 
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
@@ -48,8 +45,8 @@ async def send_reply(c, m):
         await asyncio.sleep(1)
 
     except FloodWait as e:
-        logger.warning(f"Flood wait for {e.x} seconds. Retrying...")
-        await asyncio.sleep(e.x)
+        logger.warning(f"Flood wait for {e.value} seconds. Retrying...")
+        await asyncio.sleep(e.value)
         await send_reply(c, m)
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
@@ -57,37 +54,46 @@ async def send_reply(c, m):
 def initialize_bot(token, index):
     try:
         bot = Client(f"bot_{index}", bot_token=token, api_id=API_ID, api_hash=API_HASH)
+        bot.start()  # Start the bot to validate the token
+        bot_info = bot.get_me()  # Retrieve bot information
+        bot_username = bot_info.username
+
+        logger.info(f"Bot {index} initialized successfully. Username: @{bot_username}")
         bot.add_handler(MessageHandler(send_reply))
-        bot.start()  # Start the bot here to catch any errors
         return bot
+
     except FloodWait as e:
-        logger.warning(f"Flood wait for {e.x} seconds. Retrying...")
-        bot.stop()
+        logger.warning(f"Flood wait for {e.value} seconds while initializing bot {index}. Skipping this bot.")
+        return None
+    except BadRequest as e:
+        logger.error(f"Bot {index} failed to initialize. Invalid or expired token: {token[:10]}... | Error: {e}")
         return None
     except Exception as e:
-        logger.error(f"Failed to initialize bot {index} with token {token}: {e}")
-        # Specifically catch token expiration or other common errors
-        if 'token' in str(e).lower():
-            logger.error(f"Bot token {token} has expired or is invalid.")
-        bot.stop()
+        logger.error(f"Failed to initialize bot {index} with token {token[:10]}... | Error: {e}")
         return None
 
 def main():
     try:
-        logger.info("Initializing bots...")
-        bots = [initialize_bot(token, index) for index, token in enumerate(BOT_TOKENS, start=1)]
+        logger.info(f"Total bot tokens provided: {len(BOT_TOKENS)}")
+        bots = []
 
-        for index, bot in enumerate(bots, start=1):
+        for index, token in enumerate(BOT_TOKENS, start=1):
+            logger.info(f"Processing bot {index} with token: {token[:10]}...")
+            bot = initialize_bot(token, index)
             if bot:
-                logger.info(f"Starting Bot {index}...")
-                bot.start()
-                logger.info(f"Bot {index} started successfully.")
+                bots.append(bot)
 
-        logger.info("All bots are running.")
+        if not bots:
+            logger.error("❌ No bots were initialized. Exiting...")
+            exit(1)
+
+        logger.info(f"{len(bots)} bots initialized successfully. All bots are running.")
         asyncio.get_event_loop().run_forever()
 
     except KeyboardInterrupt:
         logger.info("Shutdown signal received. Stopping bots...")
+        for bot in bots:
+            bot.stop()
 
 if __name__ == "__main__":
     main()
