@@ -26,13 +26,13 @@ except Exception as e:
 
 async def send_reply(c, m):
     try:
-        last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
+        last_name = f' {getattr(m.from_user, "last_name", "")}'  # Use getattr to safely access last_name
         mention = f"[{m.from_user.first_name}{last_name}](tg://user?id={m.from_user.id})"
-        user_full_name = f"{m.from_user.first_name} {m.from_user.last_name}" if m.from_user.first_name and m.from_user.last_name else m.from_user.first_name or str(m.from_user.id)
+        user_full_name = f"{m.from_user.first_name} {getattr(m.from_user, 'last_name', '')}" if m.from_user.first_name else m.from_user.first_name or str(m.from_user.id)
         
         logger.info(f"Sending message to 👨 - {user_full_name}")
         
-        inline_button = InlineKeyboardButton("🔰 ALL IN ONE BOT", url="https://t.me/UploadXPro_Bot")
+        inline_button = InlineKeyboardButton("Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
 
         await m.reply_text(
@@ -56,6 +56,7 @@ async def send_reply(c, m):
         await send_reply(c, m)
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
+        
 
 def initialize_bot(token, index):
     try:
