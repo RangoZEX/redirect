@@ -36,10 +36,8 @@ async def send_reply(c, m):
             await m.reply_text(
                 f"**👋 Hey {mention}**,\n\n"
                 "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
-                "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.</blockquote>**\n\n"
-                "✨ **Why move?**\n"
-                "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)**\n\n"
-                "Thank you for your support! 💙",
+                "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience. Added Additional tools and features</blockquote>**\n\n"
+                "**💗 [Thank you for your support!](https://t.me/maxxbotofficial)** 💙",
                 reply_markup=inline_keyboard,
                 quote=True,
                 disable_web_page_preview=True
@@ -57,7 +55,7 @@ async def send_reply(c, m):
         except Exception as e:
             logger.error(f"Got error while sending msg: {e}")
     else:
-        logger.warning(f"Message from a non-user source: {m}")
+        logger.warning("Message from a non-user source: 🙂")
         
 def initialize_bot(token, index):
     try:
