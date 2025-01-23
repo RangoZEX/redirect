@@ -1,7 +1,7 @@
 import os
 import asyncio
 import logging
-from pyrogram import Client
+from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from pyrogram.errors import FloodWait, BadRequest
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -22,6 +22,8 @@ except Exception as e:
     logger.error(f"Environment variable error: {e}")
     exit(1)
 
+
+@Client.on_message(filters.incoming & filters.private, group=-1)  # High-priority group
 async def send_reply(c, m):
     user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
     mention = f"[{user}](tg://user?id={m.from_user.id})"
