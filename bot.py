@@ -25,36 +25,39 @@ except Exception as e:
 
 @Client.on_message(filters.incoming & filters.private, group=-1)
 async def send_reply(c, m):
-    usr = m.from_user.first_name if m.from_user.first_name else 'User'
-    user_id = m.from_user.id
-    last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
-    mention = f"[{usr}{last_name}](tg://user?id={user_id})"
-    try:
-        inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
-        inline_keyboard = InlineKeyboardMarkup([[inline_button]])
-        await m.reply_text(
-            f"**👋 Hey {mention}**,\n\n"
-            "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
-            "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.</blockquote>**\n\n"
-            "✨ **Why move?**\n"
-            "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)**\n\n"
-            "Thank you for your support! 💙",
-            reply_markup=inline_keyboard,
-            quote=True,
-            disable_web_page_preview=True
-        )
-        logger.info(f"Moved prompt message sent to: 🙎 {usr}")
-        await c.send_reaction(
-            chat_id=m.chat.id,
-            message_id=m.id,
-            emoji="🥴",
-            big=True
-        )
-    except FloodWait as e:
-        logger.warning(f"Flood wait for {e.value} seconds. Retrying...")
-        await asyncio.sleep(e.value)
-    except Exception as e:
-        logger.error(f"Got error while send msg: {e}")
+    if m.from_user:
+        usr = m.from_user.first_name if m.from_user.first_name else 'User'
+        user_id = m.from_user.id
+        last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
+        mention = f"[{usr}{last_name}](tg://user?id={user_id})"
+        try:
+            inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
+            inline_keyboard = InlineKeyboardMarkup([[inline_button]])
+            await m.reply_text(
+                f"**👋 Hey {mention}**,\n\n"
+                "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
+                "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.</blockquote>**\n\n"
+                "✨ **Why move?**\n"
+                "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)**\n\n"
+                "Thank you for your support! 💙",
+                reply_markup=inline_keyboard,
+                quote=True,
+                disable_web_page_preview=True
+            )
+            logger.info(f"Moved prompt message sent to: 🙎 {usr}")
+            await c.send_reaction(
+                chat_id=m.chat.id,
+                message_id=m.id,
+                emoji="🥴",
+                big=True
+            )
+        except FloodWait as e:
+            logger.warning(f"Flood wait for {e.value} seconds. Retrying...")
+            await asyncio.sleep(e.value)
+        except Exception as e:
+            logger.error(f"Got error while sending msg: {e}")
+    else:
+        logger.warning(f"Message from a non-user source: {m}")
         
 def initialize_bot(token, index):
     try:
