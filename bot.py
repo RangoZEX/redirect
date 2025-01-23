@@ -22,7 +22,6 @@ except Exception as e:
     logger.error(f"Environment variable error: {e}")
     exit(1)
 
-
 # Message handler
 async def send_reply(client, message):
     try:
@@ -40,7 +39,6 @@ async def send_reply(client, message):
         )
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
-        
 
 # Initialize and run multiple bots
 async def initialize_bot(token, index):
@@ -53,7 +51,6 @@ async def initialize_bot(token, index):
     except Exception as e:
         logger.error(f"Failed to initialize bot {index}: {e}")
         return None
-
 
 async def main():
     bots = []
@@ -74,11 +71,10 @@ async def main():
     except KeyboardInterrupt:
         logger.info("Shutdown signal received. Stopping bots...")
     finally:
-        for bot in bots:
+        for index, bot in enumerate(bots, start=1):
             await bot.stop()
-            logger.info(f"{bot.session_name} stopped.")
+            logger.info(f"Bot {index} stopped.")
         logger.info("All bots stopped gracefully.")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
