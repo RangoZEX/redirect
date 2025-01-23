@@ -1,17 +1,18 @@
 import os
 import asyncio
+import time
 import logging
 from pyrogram import Client
 from pyrogram.handlers import MessageHandler
+from pyrogram.errors import FloodWait
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-# Logging setup
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# Load environment variables
 try:
     API_ID = int(os.environ.get("API_ID", 15316304))
     API_HASH = os.environ.get("API_HASH", "bd4e50df87a06ac57d4926fab706c583")
@@ -22,25 +23,38 @@ except Exception as e:
     logger.error(f"Environment variable error: {e}")
     exit(1)
 
-# Message handler
-async def send_reply(client, message):
+
+async def send_reply(c, m):
     try:
-        await message.reply_text(
-            "**👋 Hello there!**\n\n"
-            "__🚀 This bot has now permanently shifted to **[UploadXPro](https://t.me/UploadXPro_Bot)** for better features and an enhanced experience.__\n\n"
+        last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
+        mention = f"[{m.from_user.first_name}{last_name}](tg://user?id={m.from_user.id})"
+        user_full_name = f"{m.from_user.first_name} {m.from_user.last_name}" if m.from_user.first_name and m.from_user.last_name else m.from_user.first_name or str(m.from_user.id)
+        
+        logger.info(f"Sending message to 👨 - {user_full_name}")
+        inline_button = InlineKeyboardButton("ALL IN ONE BOT", url="https://t.me/UploadXPro_Bot")
+        inline_keyboard = InlineKeyboardMarkup([[inline_button]])
+        await m.reply_text(
+            f"**👋 Hello {mention}**,\n\n"
+            "<blockquote>**__🚀 This bot has now permanently shifted to **[UploadXPro](https://t.me/UploadXPro_Bot)** for better features and an enhanced experience.__**</blockquote>\n\n"
             "✨ **Why move?**\n"
             "- Faster uploads 🚄\n"
             "- More reliability 🔒\n"
             "- Additional tools and features 🎉\n\n"
             "👉 **Join now and try it out:** [UploadXPro](https://t.me/UploadXPro_Bot)\n\n"
-            "_Thank you for your support! 💙_",
+            "Thank you for your support! 💙",
+            reply_markup=inline_keyboard,
             quote=True,
             disable_web_page_preview=True
         )
+        await asyncio.sleep(1)
+
+    except FloodWait as e:
+        logger.warning(f"Flood wait for {e.x} seconds. Retrying...")
+        await asyncio.sleep(e.x)
+        await send_reply(c, m)
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
 
-# Initialize a bot
 def initialize_bot(token, index):
     try:
         bot = Client(f"bot_{index}", bot_token=token, api_id=API_ID, api_hash=API_HASH)
@@ -50,7 +64,6 @@ def initialize_bot(token, index):
         logger.error(f"Failed to initialize bot {index}: {e}")
         return None
 
-# Main function
 def main():
     try:
         logger.info("Initializing bots...")
@@ -62,7 +75,7 @@ def main():
                 bot.start()
                 logger.info(f"Bot {index} started successfully.")
 
-        logger.info("All bots are running. Press Ctrl+C to stop.")
+        logger.info("All bots are running.")
         asyncio.get_event_loop().run_forever()
 
     except KeyboardInterrupt:
