@@ -31,8 +31,10 @@ async def send_reply(c, m):
         user_full_name = f"{m.from_user.first_name} {m.from_user.last_name}" if m.from_user.first_name and m.from_user.last_name else m.from_user.first_name or str(m.from_user.id)
         
         logger.info(f"Sending message to 👨 - {user_full_name}")
-        inline_button = InlineKeyboardButton("ALL IN ONE BOT", url="https://t.me/UploadXPro_Bot")
+        
+        inline_button = InlineKeyboardButton("🔰 ALL IN ONE BOT", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
+
         await m.reply_text(
             f"**👋 Hello {mention}**,\n\n"
             "<blockquote>**__🚀 This bot has now permanently shifted to **[UploadXPro](https://t.me/UploadXPro_Bot)** for better features and an enhanced experience.__**</blockquote>\n\n"
