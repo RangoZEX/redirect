@@ -3,6 +3,7 @@ import asyncio
 import logging
 from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
+from pyrogram.types import Message
 from pyrogram.errors import FloodWait, BadRequest
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -22,11 +23,12 @@ except Exception as e:
     logger.error(f"Environment variable error: {e}")
     exit(1)
 
-
-@Client.on_message(filters.incoming & filters.private, group=-1)  # High-priority group
+@Client.on_message(filters.incoming & filters.private, group=-1)
 async def send_reply(c, m):
-    user = m.from_user.first_name or str(m.from_user.id)
-    mention = f"[{user}](tg://user?id={m.from_user.id})"
+    usr = m.from_user.first_name if m.from_user.first_name else 'User'
+    user_id = m.from_user.id
+    last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
+    mention = f"[{usr}{last_name}](tg://user?id={user_id})"
     try:
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
@@ -41,7 +43,7 @@ async def send_reply(c, m):
             quote=True,
             disable_web_page_preview=True
         )
-        logger.info(f"Moved prompt message sent to: 🙎 {user}")
+        logger.info(f"Moved prompt message sent to: 🙎 {usr}")
         await c.send_reaction(
             chat_id=m.chat.id,
             message_id=m.id,
