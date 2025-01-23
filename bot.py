@@ -35,9 +35,9 @@ async def send_reply(c, m):
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
 
         await m.reply_text(
-            f"**👋 Hello {mention}**,\n\n"
+            f"**👋 Hey {mention}**,\n\n"
             "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
-            "<blockquote>**__🚀 This bot has now permanently shifted to **[UploadXPro](https://t.me/UploadXPro_Bot)** for better features and an enhanced experience.__**</blockquote>\n\n"
+            "<blockquote>**__🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience.__**</blockquote>\n\n"
             "✨ **Why move?**\n"
             "**[Additional tools and features 🎉](https://t.me/MaxxBotOfficial/388)\n\n"
             "Thank you for your support! 💙",
