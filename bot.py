@@ -49,9 +49,8 @@ async def send_reply(c, m):
     except FloodWait as e:
         logger.warning(f"Flood wait for {e.value} seconds. Retrying...")
         await asyncio.sleep(e.value)
-        await send_reply(c, m)
     except Exception as e:
-        logger.error("Got error while send msg")
+        logger.error(f"Got error while send msg: {e}")
         
 def initialize_bot(token, index):
     try:
