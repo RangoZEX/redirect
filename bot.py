@@ -25,18 +25,12 @@ except Exception as e:
 
 async def send_reply(c, m):
     try:
-        if m.from_user:
-            first_name = m.from_user.first_name if m.from_user.first_name else str(m.from_user.id)
-            last_name = m.from_user.last_name if m.from_user.last_name else ''
-            mention = f"[{first_name}{' ' + last_name if last_name else ''}](tg://user?id={m.from_user.id})"
-        else:
-            mention = f"[Unknown User](tg://user?id={m.from_user.id if m.from_user else 'unknown'})"
-            first_name = "Unknown"
-        
-        user_full_name = first_name if first_name else str(m.from_user.id if m.from_user else 'unknown')
-        
+        first_name = m.from_user.first_name if m.from_user.first_name else str(m.from_user.id)
+        mention = f"[{first_name}](tg://user?id={m.from_user.id})"
+        user_full_name = first_name
+
         logger.info(f"Sending message to 👨 - {user_full_name}")
-        
+
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
         inline_keyboard = InlineKeyboardMarkup([[inline_button]])
 
