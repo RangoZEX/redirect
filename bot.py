@@ -25,7 +25,7 @@ except Exception as e:
 
 @Client.on_message(filters.incoming & filters.private, group=-1)  # High-priority group
 async def send_reply(c, m):
-    user = m.from_user.first_name if m.from_user and m.from_user.first_name else str(m.from_user.id)
+    user = m.from_user.first_name or str(m.from_user.id)
     mention = f"[{user}](tg://user?id={m.from_user.id})"
     try:
         inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
