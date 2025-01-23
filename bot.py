@@ -67,12 +67,6 @@ def main():
 
     except KeyboardInterrupt:
         logger.info("Shutdown signal received. Stopping bots...")
-    finally:
-        for index, bot in enumerate(bots, start=1):
-            if bot:
-                bot.stop()
-                logger.info(f"Bot {index} stopped.")
-        logger.info("All bots stopped gracefully.")
 
 if __name__ == "__main__":
     main()
