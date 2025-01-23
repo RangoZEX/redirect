@@ -1,7 +1,7 @@
 import os
 import asyncio
 import logging
-from pyrogram import Client, compose
+from pyrogram import Client
 from pyrogram.handlers import MessageHandler
 
 # Logging setup
@@ -40,41 +40,39 @@ async def send_reply(client, message):
     except Exception as e:
         logger.error(f"Failed to send shift message: {e}")
 
-# Initialize and run multiple bots
-async def initialize_bot(token, index):
+# Initialize a bot
+def initialize_bot(token, index):
     try:
         bot = Client(f"bot_{index}", bot_token=token, api_id=API_ID, api_hash=API_HASH)
         bot.add_handler(MessageHandler(send_reply))
-        await bot.start()
-        logger.info(f"Bot {index} started successfully.")
         return bot
     except Exception as e:
         logger.error(f"Failed to initialize bot {index}: {e}")
         return None
 
-async def main():
-    bots = []
+# Main function
+def main():
     try:
-        logger.info("Starting bots...")
-        for index, token in enumerate(BOT_TOKENS, start=1):
-            bot = await initialize_bot(token, index)
+        logger.info("Initializing bots...")
+        bots = [initialize_bot(token, index) for index, token in enumerate(BOT_TOKENS, start=1)]
+
+        for index, bot in enumerate(bots, start=1):
             if bot:
-                bots.append(bot)
+                logger.info(f"Starting Bot {index}...")
+                bot.start()
+                logger.info(f"Bot {index} started successfully.")
 
-        if not bots:
-            logger.error("No bots were successfully started. Exiting.")
-            return
-
-        logger.info("All bots are running.")
-        await compose(bots)
+        logger.info("All bots are running. Press Ctrl+C to stop.")
+        asyncio.get_event_loop().run_forever()
 
     except KeyboardInterrupt:
         logger.info("Shutdown signal received. Stopping bots...")
     finally:
         for index, bot in enumerate(bots, start=1):
-            await bot.stop()
-            logger.info(f"Bot {index} stopped.")
+            if bot:
+                bot.stop()
+                logger.info(f"Bot {index} stopped.")
         logger.info("All bots stopped gracefully.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
