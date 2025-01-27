@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from message import REDIRECT_MSG
 from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
@@ -30,17 +31,15 @@ async def send_reply(c, m):
         user_id = m.from_user.id
         last_name = f' {m.from_user.last_name}' if m.from_user.last_name else ''
         mention = f"[{usr}{last_name}](tg://user?id={user_id})"
+        
         try:
             inline_button = InlineKeyboardButton("🔰 Join @UploadXPro_Bot", url="https://t.me/UploadXPro_Bot")
             inline_keyboard = InlineKeyboardMarkup([[inline_button]])
-            await m.reply_text(
-                f"**👋 Hey {mention}**,\n\n"
-                "📢 𝟑𝟎𝟏 𝐌𝐨𝐯𝐞𝐝 𝐏𝐞𝐫𝐦𝐚𝐧𝐞𝐧𝐭𝐥𝐲\n\n"
-                "**<blockquote>🚀 This bot has now permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for better features and an enhanced experience. Added Additional tools and features</blockquote>**\n\n"
-                "**💗 [Thank you for your support!](https://t.me/maxxbotofficial)** 💙",
+            await m.reply_photo(
+                photo="https://i.ibb.co/7jzPRn3/301-status-code.jpg",  # URL of the image
+                caption=REDIRECT_MSG,  # The message to send along with the photo
                 reply_markup=inline_keyboard,
-                quote=True,
-                disable_web_page_preview=True
+                quote=True
             )
             logger.info(f"Moved prompt message sent to: 🙎 {usr}")
             await c.send_reaction(
