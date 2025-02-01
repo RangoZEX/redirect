@@ -2,3 +2,4 @@ TgCrypto-pyrofork
 async-timeout
 kurirogram
 pytz
+aiohttp
