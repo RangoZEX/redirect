@@ -1,7 +1,8 @@
 REDIRECT_MSG = """
 📢 **301 Moved Permanently**
 <blockquote>
-**🚀 Important Update:**  
+**🚀 Important Update:**
+
 This bot has permanently shifted to [UploadXPro](https://t.me/UploadXPro_Bot) for a better experience.  
 It now comes with **additional features** and tools for enhanced functionality.
 </blockquote>
